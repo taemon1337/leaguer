@@ -1,0 +1,114 @@
+{
+  "name": "league",
+  "plural": "leagues",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "teams": {
+      "type": [
+        "object"
+      ],
+      "default": "[]"
+    },
+    "schedule": {
+      "type": [
+        "object"
+      ],
+      "default": "[]"
+    },
+    "start_date": {
+      "type": "date"
+    },
+    "end_date": {
+      "type": "date"
+    },
+    "min_teams_per_league": {
+      "type": "number",
+      "default": 2
+    },
+    "max_teams_per_league": {
+      "type": "number",
+      "default": 1000
+    },
+    "min_teams_per_game": {
+      "type": "number",
+      "default": 2
+    },
+    "max_teams_per_game": {
+      "type": "number",
+      "default": 1000
+    },
+    "min_players_per_team": {
+      "type": "number",
+      "default": 1
+    },
+    "max_players_per_team": {
+      "type": "number",
+      "default": 30
+    },
+    "allow_players_to_join_anytime": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_teams_to_join_anytime": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_teams_to_request_games": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_teams_to_approve_games": {
+      "type": "boolean",
+      "default": true
+    },
+    "categories": {
+      "type": [
+        "string"
+      ],
+      "default": [
+        "['default']"
+      ]
+    },
+    "tags": {
+      "type": [
+        "string"
+      ],
+      "default": [
+        "[]"
+      ]
+    },
+    "rating": {
+      "type": "number"
+    },
+    "rankings": {
+      "type": [
+        "object"
+      ],
+      "default": "[]"
+    },
+    "games": {
+      "type": [
+        "object"
+      ],
+      "default": "[]"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
