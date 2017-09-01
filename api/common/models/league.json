@@ -108,7 +108,18 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "league_games": {
+      "type": "hasMany",
+      "model": "game",
+      "foreignKey": ""
+    },
+    "league_schedules": {
+      "type": "hasMany",
+      "model": "schedule",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }

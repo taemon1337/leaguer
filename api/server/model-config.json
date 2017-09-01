@@ -38,5 +38,29 @@
   "league": {
     "dataSource": "mongo",
     "public": true
+  },
+  "schedule": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "game": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "gamestat": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "team": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "location": {
+    "dataSource": "mongo",
+    "public": true
+  },
+  "group": {
+    "dataSource": "mongo",
+    "public": true
   }
 }

@@ -1,12 +1,19 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
+  <div class="container" id="app">
+    <navbar></navbar>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+  import 'font-awesome/css/font-awesome.css'
+  import 'bulma/css/bulma.css'
+  import Navbar from '@/components/Navbar'
+
   export default {
-    name: 'app'
+    name: 'app',
+    components: {
+      Navbar
+    }
   }
 </script>

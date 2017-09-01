@@ -1,0 +1,34 @@
+{
+  "name": "schedule",
+  "plural": "schedules",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "time": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "timeframe": {
+      "type": "string",
+      "required": true,
+      "default": "day of week"
+    },
+    "times": {
+      "type": [
+        "number"
+      ]
+    },
+    "repeat": {
+      "type": "string",
+      "default": "never"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
