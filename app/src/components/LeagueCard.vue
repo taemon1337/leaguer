@@ -1,9 +1,9 @@
 <template>
   <div class="card">
-    <div class="card-image">
-      <figure class="image is-4by3">
-        <img src="http://bulma.io/images/placeholders/1280x960.png" alt="Image">
-      </figure>
+    <div v-if="league.photo" class="card-image">
+      <a :href="'#/leagues/' + league.leagueId" class="image is4x3">
+        <img :src="league.photo">
+      </a>
     </div>
     <div class="card-content">
       <div class="media">
@@ -13,17 +13,16 @@
           </figure>
         </div>
         <div class="media-content">
-          <p class="title is-4">John Smith</p>
-          <p class="subtitle is-6">@johnsmith</p>
+          <p class="title is-4">{{ league.title }}</p>
+          <p class="subtitle is-6">{{ league.subtitle }}</p>
         </div>
       </div>
   
       <div class="content">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-        <a>#css</a> <a>#responsive</a>
-        <br>
-        <small>11:09 PM - 1 Jan 2016</small>
+        {{ league.description }}
+      </div>
+      <div class="content">
+        <a :href="'#/leagues/' + league.leagueId" class="button is-primary is-large">Learn more</a>
       </div>
     </div>
   </div>
@@ -32,6 +31,12 @@
 <script>
   export default {
     name: 'LeagueCard',
+    props: {
+      league: {
+        type: Object,
+        required: true
+      }
+    },
     data () {
       return {}
     }

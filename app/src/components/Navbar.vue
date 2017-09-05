@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar ">
+  <nav class="navbar">
     <div class="navbar-brand">
       <a class="navbar-item" href="/">
         <img :src="logo" alt="League Manager">
@@ -26,7 +26,7 @@
           <div class="navbar-link">
             My Stuff
           </div>
-          <div class="navbar-dropdown ">
+          <div class="navbar-dropdown">
             <a class="navbar-item " href="http://bulma.io/extensions/">
               <div class="level is-mobile">
                 <div class="level-left">
@@ -64,17 +64,41 @@
             </a>
           </div>
         </div>
+        <div v-if="currentUser" class="navbar-item">
+          <figure class="image">
+            <img :src="currentUser.photo">
+          </figure>
+        </div>
+        {{ currentUser }}
+      </div>
+      <div class="navbar-item">
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
+  import { GlobalTypes } from '@/store/mutation-types'
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'Navbar',
     data () {
       return {
-        logo: require('@/assets/LeagueIcon.png')
+        logo: require('@/assets/LeagueIcon.png'),
+        googleIcon: require('@/assets/google_signin_icon.png')
+      }
+    },
+    computed: {
+      ...mapGetters({
+        isSignedIn: GlobalTypes.isSignedIn,
+        currentUser: GlobalTypes.currentUser
+      })
+    },
+    methods: {
+      signInWithGoogle () {
+        this.$store.dispatch(GlobalTypes.signin, { provider: 'google' })
       }
     }
   }

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>New League</h1>
     <league-form></league-form>
   </div>
 </template>

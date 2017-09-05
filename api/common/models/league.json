@@ -7,11 +7,25 @@
     "validateUpsert": true
   },
   "properties": {
-    "name": {
+    "title": {
       "type": "string",
       "required": true
     },
+    "subtitle": {
+      "type": "string",
+    },
     "description": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string",
+      "required": true
+    },
+    "state": {
+      "type": "string",
+      "required": true
+    },
+    "photo": {
       "type": "string"
     },
     "owner": {
@@ -64,6 +78,10 @@
       "default": true
     },
     "allow_teams_to_join_anytime": {
+      "type": "boolean",
+      "default": true
+    },
+    "allow_teams_to_request_locations": {
       "type": "boolean",
       "default": true
     },
