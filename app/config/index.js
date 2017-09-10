@@ -31,6 +31,10 @@ module.exports = {
       '/api': {
         target: 'http://api:3000',
         changeOrigin: true
+      },
+      '/proxy': {
+        target: 'http://api:3000',
+        changeOrigin: true
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

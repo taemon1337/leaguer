@@ -1,45 +1,52 @@
 <template>
   <div>
-    <form ref="form">
+    <form @submit.prevent.stop='save' ref="form" id="form">
+      <input type='hidden' name='leagueId' :value="league.leagueId">
       <form-wizard>
         <tab-content title="League Info" :beforeChange="refresh">
           <div class="columns">
-            <div class="column field">
-              <label class="label">Title</label>
-              <div class="control">
-                <input name="title" class="input" type="text" placeholder="unique title...">
+            <div class="column one-half">
+              <div class="field">
+                <label class="label">Title</label>
+                <div class="control">
+                  <input name="title" class="input" type="text" placeholder="unique title..." required>
+                </div>
               </div>
-            </div>
-            <div class="column field">
-              <label class="label">Subtitle</label>
-              <div class="control">
-                <input name="subtitle" class="input" type="text" placeholder="tag line...">
+              <div class="field">
+                <label class="label">Subtitle</label>
+                <div class="control">
+                  <input name="subtitle" class="input" type="text" placeholder="tag line...">
+                </div>
               </div>
+              <input type="hidden" name="photo">
+              <croppie-image-input value="" @input="setPhoto" label='League Image'></croppie-image-input>
             </div>
-          </div>
-          <div class="field">
-            <label class="label">Information</label>
-            <div class="control">
-              <textarea name="description" class="textarea" type="text" placeholder="description and/or rules..."></textarea>
+            <div class="column one-half">
+              <div class="field">
+                <label class="label">Information</label>
+                <div class="control">
+                  <textarea name="description" class="textarea" type="text" placeholder="description and/or rules..."></textarea>
+                </div>
+              </div>
             </div>
           </div>
           <div class="columns">
             <div class="column field">
               <label class="label">City</label>
               <div class="control">
-                <input name="city" class="input" type="text" placeholder="city...">
+                <input name="city" class="input" type="text" placeholder="city..." required>
               </div>
             </div>
             <div class="column field">
               <label class="label">State</label>
               <div class="control">
-                <input name="state" class="input" type="text" placeholder="state...">
+                <input name="state" class="input" type="text" placeholder="state..." required>
               </div>
             </div>
             <div class="column field">
               <label class="label">Country</label>
               <div class="control">
-                <input name="country" class="input" type="text" placeholder="country...">
+                <input name="country" class="input" type="text" placeholder="country..." required>
               </div>
             </div>
           </div>
@@ -48,36 +55,55 @@
           <div class="field">
             <label class="label">Number of allowed teams in league</label>
             <div class="control">
-              <input name="min_teams_per_league" type="hidden" ref="min_teams_per_league">
-              <input name="max_teams_per_league" type="hidden" ref="max_teams_per_league">
-              <vue-slider ref="slider1" v-bind="slider"></vue-slider>
+              <input class="is-hidden" name="min_teams_per_league" type="number" ref="min_teams_per_league">
+              <input class="is-hidden" name="max_teams_per_league" type="number" ref="max_teams_per_league">
+              <vue-slider @callback='setTeamsPerLeague' ref="slider1" v-bind="slider"></vue-slider>
             </div>
           </div>
           <div class="field">
             <label class="label">Number of teams allowed in each game</label>
             <div class="control">
-              <input name="min_teams_per_game" type="hidden" ref="min_teams_per_game">
-              <input name="max_teams_per_game" type="hidden" ref="max_teams_per_game">
-              <vue-slider ref="slider3" v-bind="slider"></vue-slider>
+              <input class="is-hidden" name="min_teams_per_game" type="number" ref="min_teams_per_game">
+              <input class="is-hidden" name="max_teams_per_game" type="number" ref="max_teams_per_game">
+              <vue-slider @callback="setTeamsPerGame" ref="slider3" v-bind="slider"></vue-slider>
             </div>
           </div>
           <div class="field">
             <label class="label">Number of players allowed on each team</label>
             <div class="control">
-              <input name="min_players_per_team" type="hidden" ref="min_players_per_team">
-              <input name="max_players_per_team" type="hidden" ref="max_players_per_team">
+              <input class="is-hidden" name="min_players_per_team" type="number" ref="min_players_per_team">
+              <input class="is-hidden" name="max_players_per_team" type="number" ref="max_players_per_team">
               <vue-slider @callback="setPlayersPerTeam" ref="slider2" v-bind="slider"></vue-slider>
             </div>
           </div>
           
-          <div class="field">
-            <label class="label">Is this an "open" or "private" league?</label>
-            <div class="control">
-              <button type="button" @click.prevent="setOpen" :class="openLeague ? 'button is-primary' : 'button'">Open</button>
-              <button type="button" @click.prevent="setPrivate" :class="openLeague ? 'button' : 'button is-primary'">Private</button>
-              <div class="content">
-                An open league allows teams to schedule their own games and locations, a private league requires the league manager to schedule games and locations and approve teams before they can join the league.
+          <div class="columns">
+            <div class="field column is-one-third">
+              <label class="label">Who will be the manager?</label>
+              <div class="control">
+                <input class="input" v-if="currentUser" type="text" name="managerEmail" :value="currentUser.email">
               </div>
+            </div>
+
+            <div class="field column is-one-third">
+              <label class="label">Is this an "open" or "private" league?</label>
+              <div class="control">
+                <button type="button" @click.prevent="setOpen" :class="openLeague === true ? 'button is-primary' : 'button'">Open</button>
+                <button type="button" @click.prevent="setPrivate" :class="openLeague === false ? 'button is-primary' : 'button'">Private</button>
+              </div>
+            </div>
+            
+            <div class="field column is-one-third">
+              <article class="message">
+                <div class="message-body">
+                  An <strong>open</strong> league allows teams to schedule their own games and locations.
+                </div>
+              </article>
+              <article class="message">
+                <div class="message-body">
+                  A <strong>private</strong> league requires the league manager to schedule games and locations and approve teams before they can join the league.
+                </div>
+              </article>
             </div>
           </div>
         </tab-content>
@@ -159,7 +185,9 @@
           </div>
         </tab-content>
         <tab-content title="Finish">
-          Complete
+          <button class="button is-large is-primary">Create League</button>
+          <br><br>
+          <pre>{{ formdata }}</pre>
         </tab-content>
       </form-wizard>
     </form>
@@ -170,12 +198,17 @@
   import {FormWizard, TabContent} from 'vue-form-wizard'
   import 'vue-form-wizard/dist/vue-form-wizard.min.css'
   import vueSlider from 'vue-slider-component'
+  import serializeForm from '@/lib/serializeForm'
+  import { LeagueTypes, GlobalTypes } from '@/store/mutation-types'
+  import { mapGetters } from 'vuex'
+  import CroppieImageInput from '@/components/CroppieImageInput'
 
   export default {
     name: 'LeagueForm',
     data () {
       return {
-        openLeague: true,
+        formdata: {},
+        openLeague: null,
         slider: {
           value: [1, 10],
           min: 0,
@@ -188,7 +221,17 @@
         }
       }
     },
+    computed: {
+      ...mapGetters({
+        currentUser: GlobalTypes.currentUser,
+        league: LeagueTypes.active
+      })
+    },
     methods: {
+      computeFormData: function () {
+        let form = this.$refs.form || document.getElementById('form') || document.forms[0]
+        this.formdata = serializeForm(form)
+      },
       refresh: function () {
         let self = this
         process.nextTick(function () {
@@ -198,17 +241,21 @@
         })
         return true
       },
+      setPhoto (val) {
+        console.log('set photo', val)
+        this.$refs.form.elements.photo.value = val
+      },
       setTeamsPerLeague (val) {
-        this.$refs.min_teams_per_league.value = val[0]
-        this.$refs.max_teams_per_league.value = val[1]
+        this.$refs.form.elements.min_teams_per_league.value = parseInt(val[0])
+        this.$refs.form.elements.max_teams_per_league.value = parseInt(val[1])
       },
       setTeamsPerGame (val) {
-        this.$refs.min_teams_per_game.value = val[0]
-        this.$refs.max_teams_per_game.value = val[1]
+        this.$refs.form.elements.min_teams_per_game.value = parseInt(val[0])
+        this.$refs.form.elements.max_teams_per_game.value = parseInt(val[1])
       },
       setPlayersPerTeam (val) {
-        this.$refs.min_players_per_team.value = val[0]
-        this.$refs.max_players_per_team.value = val[1]
+        this.$refs.form.elements.min_players_per_team.value = parseInt(val[0])
+        this.$refs.form.elements.max_players_per_team.value = parseInt(val[1])
       },
       setAdvanced (val) {
         this.$refs.form.elements.allow_players_to_join_anytime[0].checked = !!val
@@ -229,12 +276,21 @@
       setPrivate () {
         this.openLeague = false
         this.setAdvanced(false)
+      },
+      save (e) {
+        let record = Object.assign(this.league, serializeForm(e.target))
+        console.log('Record ', record)
+        this.$store.dispatch(LeagueTypes.save, record)
       }
+    },
+    created () {
+      this.computeFormData()
     },
     components: {
       FormWizard,
       TabContent,
-      vueSlider
+      vueSlider,
+      CroppieImageInput
     }
   }
 </script>

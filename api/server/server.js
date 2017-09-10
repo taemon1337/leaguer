@@ -2,6 +2,7 @@
 
 var loopback = require('loopback');
 var boot = require('loopback-boot');
+var request = require('request');
 
 var app = module.exports = loopback();
 
@@ -17,6 +18,17 @@ app.start = function() {
     }
   });
 };
+
+app.get('/proxy/*', function (req, res, next) {
+  try {
+    var url = req.originalUrl.toString().split('proxy/').pop();
+    console.log('PROXY -> ' + url);
+    req.pipe(request(url)).pipe(res);
+  } catch (err) {
+    console.warn('Error in proxy: ', err)
+    return res.sendStatus(400);
+  }
+})
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.

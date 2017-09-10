@@ -1,13 +1,16 @@
 export const LeagueTypes = {
   all: 'League.all',
-  active: 'League.active'
+  active: 'League.active',
+  save: 'League.save',
+  remove: 'League.remove'
 }
 
 export const GlobalTypes = {
   currentUser: 'currentUser',
   isSignedIn: 'isSignedIn',
   signin: 'SignIn',
-  signout: 'SignOut'
+  signout: 'SignOut',
+  signedout: 'SignedOut'
 }
 
 export const MessageTypes = {

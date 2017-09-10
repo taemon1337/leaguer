@@ -1,30 +1,47 @@
 import { GlobalTypes, MessageTypes } from '../mutation-types'
 import store from '@/store'
 
-let gapi = require('@/assets/gapi.platform.js')
+let gapi = window.gapi // require('@/assets/gapi.platform.js')
 let auth2 = null
 
+gapi.load('auth2', function () {
+  auth2 = gapi.auth2.init({
+    client_id: '761319481081-qdhsn5m2llie9qa6rtaf1an0vgpqlg92.apps.googleusercontent.com',
+    scope: 'profile email'
+  })
+
+  auth2.isSignedIn.listen(function (val) {
+    if (!val) {
+      store.dispatch(MessageTypes.add, {
+        title: 'Signed Out!',
+        klass: 'notification is-info'
+      })
+      store.dispatch(GlobalTypes.signedout)
+    } else {
+      if (auth2) {
+        store.dispatch(GlobalTypes.signin, auth2.currentUser)
+      }
+    }
+  })
+
+  auth2.currentUser.listen(function (user) {
+    store.dispatch(GlobalTypes.signin, user)
+  })
+
+  if (auth2.isSignedIn.get() === true) {
+    auth2.signIn()
+  }
+})
+
 const state = {
+  currentUser: null,
   fullscreen: false,
   filter: null
 }
 
 // getters
 const getters = {
-  [GlobalTypes.isSignedIn]: state => auth2 ? auth2.isSignedIn.get() : null,
-  [GlobalTypes.currentUser]: function (state) {
-    if (auth2 && auth2.isSignedIn.get()) {
-      let profile = auth2.currentUser.get().getBasicProfile()
-      return {
-        id: profile.getId(),
-        name: profile.getName(),
-        photo: profile.getImageUrl(),
-        email: profile.getEmail()
-      }
-    } else {
-      return {}
-    }
-  },
+  [GlobalTypes.currentUser]: state => state.currentUser,
   [GlobalTypes.fullscreen]: state => state.fullscreen,
   [GlobalTypes.filter]: state => state.filter
 }
@@ -37,11 +54,24 @@ const actions = {
   [GlobalTypes.filter] ({ commit }, filter) {
     commit(GlobalTypes.filter, filter)
   },
-  [GlobalTypes.signin] ({ commit }) {
-    commit(GlobalTypes.signin)
+  [GlobalTypes.signin] ({ commit }, user) {
+    if (user && user.getBasicProfile) {
+      let profile = user.getBasicProfile()
+      if (profile) {
+        commit(GlobalTypes.signin, {
+          id: profile.getId(),
+          name: profile.getName(),
+          photo: profile.getImageUrl(),
+          email: profile.getEmail()
+        })
+      }
+    }
   },
   [GlobalTypes.signout] ({ commit }) {
     commit(GlobalTypes.signout)
+  },
+  [GlobalTypes.signedout] ({ commit }) {
+    commit(GlobalTypes.signedout)
   }
 }
 
@@ -53,42 +83,16 @@ const mutations = {
   [GlobalTypes.filter] (state, filter) {
     state.filter = filter
   },
-  [GlobalTypes.signin] (state) {
-    gapi.load('auth2', function () {
-      auth2 = gapi.auth2.init({
-        client_id: '761319481081-qdhsn5m2llie9qa6rtaf1an0vgpqlg92.apps.googleusercontent.com',
-        scope: 'profile email'
-      })
-
-      auth2.isSignedIn.listen(function (val) {
-        if (!val) {
-          store.dispatch(MessageTypes.add, {
-            title: 'Signed Out!',
-            klass: 'notification is-info'
-          })
-        } else {
-          console.log('Signed in status changed to ', val)
-        }
-      })
-
-      auth2.currentUser.listen(function (user) {
-        console.log('user changed')
-      })
-
-      if (auth2.isSignedIn.get() === true) {
-        console.log('is signed in!')
-        auth2.signIn()
-      }
-    })
+  [GlobalTypes.signin] (state, user) {
+    state.currentUser = user
   },
   [GlobalTypes.signout] (state) {
-    auth2.signOut().then(function () {
-      store.dispatch(MessageTypes.add, {
-        title: 'Signed out!',
-        klass: 'notification is-success'
-      })
-    })
-    auth2 = null
+    if (auth2) {
+      auth2.signOut()
+    }
+  },
+  [GlobalTypes.signedout] (state) {
+    state.currentUser = null
   }
 }
 

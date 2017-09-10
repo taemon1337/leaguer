@@ -3,7 +3,7 @@
     <div v-for='(message, idx) in messages' :key='idx' :class="message.klass || 'notification'">
       <button @click='remove(idx)' class="delete"></button>
       {{ message.title }}
-      <small v-if='message.content'>{{ message.content }}</small>
+      <div v-if='message.content' v-html="message.content"></div>
     </div>
   </div>
 </template>

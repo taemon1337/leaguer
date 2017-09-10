@@ -10,7 +10,7 @@ const state = {
 // getters
 const getters = {
   [LeagueTypes.all]: state => state.all,
-  [LeagueTypes.active]: state => state.all[state.activeId]
+  [LeagueTypes.active]: state => state.all[state.activeId] || {}
 }
 
 // actions
@@ -34,6 +34,17 @@ const actions = {
       store.dispatch(MessageTypes.add, {
         klass: 'notification is-danger',
         title: 'Error fetching league with id ' + leagueId,
+        content: err.toString()
+      })
+    })
+  },
+  [LeagueTypes.save] ({ commit }, record) {
+    api.leagues.save(record).then(function (resp) {
+      commit(LeagueTypes.add, Object.assign(record, resp))
+    }).catch(function (err) {
+      store.dispatch(MessageTypes.add, {
+        klass: 'notification is-danger',
+        title: 'Error saving "' + record.title + '"',
         content: err.toString()
       })
     })

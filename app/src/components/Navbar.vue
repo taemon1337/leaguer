@@ -21,11 +21,17 @@
           <router-link to="/leagues/new">Create League</router-link>
         </a>
       </div>
-      <div class="navbar-end">
+      <div v-if="currentUser" class="navbar-end">
+        <a class="navbar-item">
+          <input class="input" type="text" placeholder="Search...">
+        </a>
+        <div>
+          <figure class="image is-48x48">
+            <img class="is-round" :src="currentUser.photo">
+          </figure>
+        </div>
         <div class="navbar-item has-dropdown is-hoverable">
-          <div class="navbar-link">
-            My Stuff
-          </div>
+          <div class="navbar-link"></div>
           <div class="navbar-dropdown">
             <a class="navbar-item " href="http://bulma.io/extensions/">
               <div class="level is-mobile">
@@ -62,17 +68,16 @@
             <a class="navbar-item">
               My Profile
             </a>
+            <a class="navbar-item" @click="signout">
+              Sign Out
+            </a>
           </div>
         </div>
-        <div v-if="currentUser" class="navbar-item">
-          <figure class="image">
-            <img :src="currentUser.photo">
-          </figure>
-        </div>
-        {{ currentUser }}
       </div>
-      <div class="navbar-item">
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+      <div v-show="!currentUser" class="navbar-end">
+        <div class="navbar-item" title="Sign in with Google">
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </div>
       </div>
     </div>
   </nav>
@@ -92,14 +97,19 @@
     },
     computed: {
       ...mapGetters({
-        isSignedIn: GlobalTypes.isSignedIn,
         currentUser: GlobalTypes.currentUser
       })
     },
     methods: {
-      signInWithGoogle () {
-        this.$store.dispatch(GlobalTypes.signin, { provider: 'google' })
+      signout () {
+        this.$store.dispatch(GlobalTypes.signout)
       }
     }
   }
 </script>
+
+<style scoped="true">
+  .is-round {
+    border-radius: 50%;
+  }
+</style>
