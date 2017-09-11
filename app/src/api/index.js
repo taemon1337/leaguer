@@ -24,13 +24,15 @@ let leagues = {
     })
   },
   get: function (id) {
-    return http.get('/leagues/' + id)
+    return http.get('/leagues/' + id).then(function (resp) {
+      return resp.data
+    })
   },
   save: function (record) {
-    if (record.leagueId) {
-      return http.put('/leagues/' + record.leagueId, record).then(function (resp) { return resp.data })
+    if (record.id) {
+      return http.put('/leagues/' + record.id, record).then(function (resp) { return resp.data })
     } else {
-      return http.post('/leagues/' + record.leagueId, record).then(function (resp) { return resp.data })
+      return http.post('/leagues/' + record.id, record).then(function (resp) { return resp.data })
     }
   }
 }

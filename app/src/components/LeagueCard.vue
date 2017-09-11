@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div v-if="league.photo" class="card-image">
-      <a :href="'#/leagues/' + league.leagueId" class="image is4x3">
+      <a :href="'#/leagues/' + league.id" class="image is4x3">
         <img :src="league.photo">
       </a>
     </div>
@@ -22,7 +22,7 @@
         {{ league.description }}
       </div>
       <div class="content">
-        <a :href="'#/leagues/' + league.leagueId" class="button is-primary is-large">Learn more</a>
+        <a :href="'#/leagues/' + league.id" class="button is-primary is-large">Learn more</a>
       </div>
     </div>
   </div>

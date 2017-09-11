@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HomePage from '@/pages/HomePage'
 import NewLeaguePage from '@/pages/NewLeaguePage'
 import LeaguePage from '@/pages/LeaguePage'
+import EditLeaguePage from '@/pages/EditLeaguePage'
 
 Vue.use(Router)
 
@@ -19,9 +20,14 @@ export default new Router({
       component: NewLeaguePage
     },
     {
-      path: '/leagues/:leagueId',
+      path: '/leagues/:id',
       name: 'LeaguePage',
       component: LeaguePage
+    },
+    {
+      path: '/leagues/:id/edit',
+      name: 'EditLeaguePage',
+      component: EditLeaguePage
     }
   ]
 })

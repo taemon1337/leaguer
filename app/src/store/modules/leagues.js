@@ -10,7 +10,7 @@ const state = {
 // getters
 const getters = {
   [LeagueTypes.all]: state => state.all,
-  [LeagueTypes.active]: state => state.all[state.activeId] || {}
+  [LeagueTypes.active]: state => state.all.filter(function (l) { return l.id === state.activeId })[0]
 }
 
 // actions
@@ -26,14 +26,13 @@ const actions = {
       })
     })
   },
-  [LeagueTypes.active] ({ commit }, leagueId) {
-    api.leagues.get(leagueId).then(function (resp) {
+  [LeagueTypes.active] ({ commit }, id) {
+    api.leagues.get(id).then(function (resp) {
       commit(LeagueTypes.add, resp)
-      commit(LeagueTypes.active, leagueId)
     }).catch(function (err) {
       store.dispatch(MessageTypes.add, {
         klass: 'notification is-danger',
-        title: 'Error fetching league with id ' + leagueId,
+        title: 'Error fetching league with id ' + id,
         content: err.toString()
       })
     })
@@ -59,18 +58,23 @@ const mutations = {
   [LeagueTypes.add] (state, league) {
     let found = state.all.length // append if not found
     state.all.forEach(function (l, i) {
-      if (l.leagueId === league.leagueId) {
+      if (l.id === league.id) {
         found = i // update existing record
       }
     })
     state.all.splice(found, 1, league)
+    state.activeId = league.id
   },
-  [LeagueTypes.active] (state, leagueId) {
-    state.all.forEach(function (l) {
-      if (l.leagueId === leagueId) {
-        state.activeId = leagueId
-      }
-    })
+  [LeagueTypes.active] (state, id) {
+    if (!id) {
+      state.activeId = null
+    } else {
+      state.all.forEach(function (l) {
+        if (l.id === id) {
+          state.activeId = id
+        }
+      })
+    }
   }
 }
 

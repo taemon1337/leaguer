@@ -1,7 +1,7 @@
 <template>
   <div>
     <form @submit.prevent.stop='save' ref="form" id="form">
-      <input type='hidden' name='leagueId' :value="league.leagueId">
+      <input type='hidden' name='id' :value="league ? league.id : null">
       <form-wizard>
         <tab-content title="League Info" :beforeChange="refresh">
           <div class="columns">
@@ -107,7 +107,7 @@
             </div>
           </div>
         </tab-content>
-        <tab-content title="Advanced">
+        <tab-content title="Advanced" :before-change="computeFormData">
           <div class="field">
             <div class="control">
               <label class="checkbox">
@@ -202,9 +202,15 @@
   import { LeagueTypes, GlobalTypes } from '@/store/mutation-types'
   import { mapGetters } from 'vuex'
   import CroppieImageInput from '@/components/CroppieImageInput'
+  import injectForm from '@/lib/injectForm'
 
   export default {
     name: 'LeagueForm',
+    props: {
+      id: {
+        type: String
+      }
+    },
     data () {
       return {
         formdata: {},
@@ -223,14 +229,16 @@
     },
     computed: {
       ...mapGetters({
-        currentUser: GlobalTypes.currentUser,
-        league: LeagueTypes.active
+        league: LeagueTypes.active,
+        currentUser: GlobalTypes.currentUser
       })
     },
     methods: {
       computeFormData: function () {
+        console.log('computing...')
         let form = this.$refs.form || document.getElementById('form') || document.forms[0]
         this.formdata = serializeForm(form)
+        return true
       },
       refresh: function () {
         let self = this
@@ -285,6 +293,14 @@
     },
     created () {
       this.computeFormData()
+      if (this.id) {
+        this.$store.dispatch(LeagueTypes.active, this.id)
+      }
+    },
+    updated () {
+      if (this.league) {
+        injectForm(this.$refs.form, this.league)
+      }
     },
     components: {
       FormWizard,

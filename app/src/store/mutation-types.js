@@ -1,6 +1,7 @@
 export const LeagueTypes = {
   all: 'League.all',
   active: 'League.active',
+  add: 'League.add',
   save: 'League.save',
   remove: 'League.remove'
 }

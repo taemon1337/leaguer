@@ -1,7 +1,9 @@
 <template>
   <div v-if="league" class="container">
+    <league-bar :league="league"></league-bar>
     <section class="hero">
       <div class="hero-body">
+        <img :src="league.photo" />
         <div class="container">
           <h1 class="title">
             {{ league.title }}
@@ -12,12 +14,11 @@
         </div>
       </div>
     </section>
-    <league-stats></league-stats>
   </div>
 </template>
 
 <script>
-  import LeagueStats from '@/components/LeagueStats'
+  import LeagueBar from '@/components/LeagueBar'
   import { mapGetters } from 'vuex'
   import { LeagueTypes } from '@/store/mutation-types'
 
@@ -32,10 +33,10 @@
       })
     },
     created () {
-      this.$store.dispatch(LeagueTypes.active, this.$route.params.leagueId)
+      this.$store.dispatch(LeagueTypes.active, this.$route.params.id)
     },
     components: {
-      LeagueStats
+      LeagueBar
     }
   }
 </script>

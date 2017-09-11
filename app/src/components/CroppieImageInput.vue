@@ -23,7 +23,7 @@
         <a class="navbar-item">
           <div class="file">
             <label class="file-label">
-              <input @change="loadFile" class="file-input" type="file" name="resume" accept="image/*">
+              <input @change="loadFile" class="file-input" type="file" accept="image/*">
               <span class="file-cta">
                 <span class="file-icon">
                   <i class="fa fa-upload"></i>
@@ -73,7 +73,7 @@
         url: null,
         file: null,
         opts: {
-          viewport: { width: 600, height: 300, type: 'circle' },
+          viewport: { width: 600, height: 300 },
           boundary: { width: 650, height: 350 },
           showZoomer: true,
           enableResize: false,
