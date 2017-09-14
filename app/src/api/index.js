@@ -5,6 +5,11 @@ let http = axios.create({
   timeout: 60000
 })
 
+let cities = axios.create({
+  baseURL: '/cities',
+  timeout: 10000
+})
+
 let proxy = axios.create({
   baseURL: '/proxy/',
   timeout: 10000
@@ -40,5 +45,6 @@ let leagues = {
 export default {
   http: http,
   proxy: proxy,
+  cities: cities,
   leagues: leagues
 }

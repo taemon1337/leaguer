@@ -7,7 +7,6 @@
 </template>
 
 <script>
-  import 'font-awesome/css/font-awesome.css'
   import 'bulma/css/bulma.css'
   import Navbar from '@/components/Navbar'
   import ErrorMessages from '@/components/ErrorMessages'
