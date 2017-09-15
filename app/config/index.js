@@ -39,6 +39,10 @@ module.exports = {
       '/cities': {
         target: 'http://api:3000',
         changeOrigin: true
+      },
+      '/ipgeo': {
+        target: 'http://api:3000',
+        changeOrigin: true
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

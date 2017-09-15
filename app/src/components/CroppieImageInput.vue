@@ -8,7 +8,7 @@
         </span>
       </a>
     </label>
-    <div v-show="showing">
+    <div>
       <nav v-show="editing" class="navbar">
         <div class="navbar-end">
           <button @click.stop.prevent="popup" class="button">
@@ -52,6 +52,9 @@
   export default {
     name: 'CroppieImageInput',
     props: {
+      value: {
+        type: String
+      },
       label: {
         type: String,
         default: 'Image'
@@ -67,7 +70,7 @@
     },
     data () {
       return {
-        showing: true,
+        showing: false,
         editing: false,
         crop: null,
         url: null,
@@ -87,6 +90,9 @@
     methods: {
       initCroppie () {
         this.croppie = new Croppie(this.$refs.croppie, this.opts)
+        if (this.value) {
+          this.croppie.bind({ url: this.value })
+        }
       },
       popup () {
         let self = this

@@ -1,9 +1,13 @@
 'use strict';
 
+var path = require('path');
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 var request = require('request');
 var cities = require('cities');
+var maxmind = require('maxmind');
+var mmdb = path.join(__dirname, '..', 'GeoLite2-City_20170905/GeoLite2-City.mmdb');
+var cityLookup = maxmind.openSync(mmdb);
 
 var app = module.exports = loopback();
 
@@ -63,6 +67,13 @@ app.get('/cities', function (req, res, next) {
 
   res.send(JSON.stringify(matches, null, 2));
 })
+
+app.get('/ipgeo', function (req, res, next) {
+  console.log('IP GEO: ' + req.connection.remoteAddress);
+  res.setHeader('Content-Type', 'application/json');
+  var geo = cityLookup.get(req.connection.remoteAddress);
+  res.send(JSON.stringify(geo, null, 2));
+});
 
 
 // Bootstrap the application, configure models, datasources and middleware.
