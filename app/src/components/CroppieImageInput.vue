@@ -105,11 +105,14 @@
       },
       triggerEmit () {
         let self = this
-        self.croppie.result(self.format).then(function (res) {
+        self.getResult().then(function (res) {
           self.$emit('input', res)
           self.editing = false
           self.showing = false
         })
+      },
+      getResult () {
+        return this.croppie.result(this.format)
       },
       toggle () {
         this.showing = !this.showing

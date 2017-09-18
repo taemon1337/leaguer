@@ -3,7 +3,7 @@
     <league-bar :league="league"></league-bar>
     <section class="hero">
       <div class="hero-body">
-        <img :src="league.photo" />
+        <img :src="league.photo" width="100%" />
         <div class="container">
           <h1 class="title">
             {{ league.title }}

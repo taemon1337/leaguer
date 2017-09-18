@@ -17,13 +17,17 @@
     "description": {
       "type": "string"
     },
-    "city": {
+    "location": {
       "type": "string",
       "required": true
     },
-    "state": {
+    "managerEmail": {
       "type": "string",
       "required": true
+    },
+    "actionText": {
+      "type": "string",
+      "default": "Join Now!"
     },
     "photo": {
       "type": "string"

@@ -3,7 +3,8 @@ export const LeagueTypes = {
   active: 'League.active',
   add: 'League.add',
   save: 'League.save',
-  remove: 'League.remove'
+  remove: 'League.remove',
+  findById: 'League.findById'
 }
 
 export const GlobalTypes = {

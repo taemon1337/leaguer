@@ -25,11 +25,7 @@ const actions = {
 // mutations must be synchronous
 const mutations = {
   [MessageTypes.add] (state, message) {
-    if (message.title) {
-      state.all.push(message)
-    } else {
-      console.error('Invalid Message, title is required', message)
-    }
+    state.all.push(message)
   },
   [MessageTypes.remove] (state, idx) {
     state.all.splice(idx, 1)

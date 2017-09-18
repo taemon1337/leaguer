@@ -10,6 +10,11 @@ const state = {
 // getters
 const getters = {
   [LeagueTypes.all]: state => state.all,
+  [LeagueTypes.findById]: function (state) {
+    return function (id) {
+      return state.all.filter(item => { return item.id === id })
+    }
+  },
   [LeagueTypes.active]: state => state.all.filter(function (l) { return l.id === state.activeId })[0]
 }
 
@@ -20,9 +25,8 @@ const actions = {
       commit(LeagueTypes.all, resp)
     }).catch(function (err) {
       store.dispatch(MessageTypes.add, {
-        klass: 'notification is-danger',
-        title: 'Error fetching leagues',
-        content: err.toString()
+        type: 'is-danger',
+        message: 'Error fetching leagues! ' + err.toString()
       })
     })
   },
@@ -31,20 +35,35 @@ const actions = {
       commit(LeagueTypes.add, resp)
     }).catch(function (err) {
       store.dispatch(MessageTypes.add, {
-        klass: 'notification is-danger',
-        title: 'Error fetching league with id ' + id,
-        content: err.toString()
+        type: 'is-danger',
+        message: 'Error fetching league with id ' + id + '\n' + err.toString()
       })
     })
   },
   [LeagueTypes.save] ({ commit }, record) {
     api.leagues.save(record).then(function (resp) {
       commit(LeagueTypes.add, Object.assign(record, resp))
+      store.dispatch(MessageTypes.add, {
+        message: 'Saved ' + record.title + '!',
+        type: 'is-success'
+      })
     }).catch(function (err) {
       store.dispatch(MessageTypes.add, {
-        klass: 'notification is-danger',
-        title: 'Error saving "' + record.title + '"',
-        content: err.toString()
+        type: 'is-danger',
+        message: 'Error saving "' + record.title + '"' + err.toString(),
+        actionText: 'Ok'
+      })
+    })
+  },
+  [LeagueTypes.remove] ({ commit }, record) {
+    api.leagues.remove(record).then(function (resp) {
+      commit(LeagueTypes.remove, record)
+    })
+    .catch(function (err) {
+      store.dispatch(MessageTypes.add, {
+        type: 'is-success',
+        message: 'Removed ' + record.title + '!' + err.toString(),
+        actionText: 'Ok'
       })
     })
   }
@@ -75,6 +94,16 @@ const mutations = {
         }
       })
     }
+  },
+  [LeagueTypes.remove] (state, league) {
+    let found = state.all.length // append if not found
+    state.all.forEach(function (l, i) {
+      if (l.id === league.id) {
+        found = i
+      }
+    })
+    state.all.splice(found, 1)
+    state.activeId = null
   }
 }
 

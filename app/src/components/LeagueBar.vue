@@ -24,6 +24,7 @@
           <router-link :to="'/leagues/' + league.id + '/edit'">Edit</router-link>
         </button>
         <button @click.stop.prevent="archive" class="button is-default">Archive</button>
+        <button @click.stop.prevent="remove" class="button is-danger">Delete</button>
       </div>
     </div>
   </nav>
@@ -49,7 +50,7 @@
         currentUser: GlobalTypes.currentUser
       }),
       isOwner () {
-        return this.league.managerEmail === this.currentUser.email
+        return this.currentUser && this.league.managerEmail === this.currentUser.email || true
       }
     },
     methods: {
@@ -58,6 +59,16 @@
       },
       archive () {
         this.$store.dispatch(LeagueTypes.remove, this.league)
+      },
+      remove () {
+        let self = this
+        this.$dialog.confirm({
+          message: 'Are you sure you want to delete "' + this.league.title + '"?',
+          onConfirm: function () {
+            self.$store.dispatch(LeagueTypes.remove, self.league)
+            self.$router.push({ path: '/' })
+          }
+        })
       }
     }
   }

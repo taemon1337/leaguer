@@ -1,11 +1,5 @@
 <template>
-  <div class='container has-text-centered' style='position:absolute;top:50px;z-index:999;'>
-    <div v-for='(message, idx) in messages' :key='idx' :class="message.klass || 'notification'">
-      <button @click='remove(idx)' class="delete"></button>
-      {{ message.title }}
-      <div v-if='message.content' v-html="message.content"></div>
-    </div>
-  </div>
+  <div></div>
 </template>
 
 <script>
@@ -26,6 +20,21 @@
       remove (idx) {
         this.$store.dispatch(MessageTypes.remove, idx)
       }
+    },
+    created () {
+      this.once = true
+    },
+    mounted () {
+      let self = this
+      this.messages.forEach(function (message) {
+        if (message.component === 'dialog') {
+          self.$dialog.open(message)
+        } else if (message.component === 'snackbar') {
+          self.$snackbar.open(message)
+        } else {
+          self.$toast.open(message)
+        }
+      })
     }
   }
 </script>

@@ -14,7 +14,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'LogoutForm',
+    name: 'LoggedOutMenu',
     data () {
       return {}
     },

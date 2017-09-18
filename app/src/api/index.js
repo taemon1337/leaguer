@@ -37,8 +37,18 @@ let leagues = {
     if (record.id) {
       return http.put('/leagues/' + record.id, record).then(function (resp) { return resp.data })
     } else {
-      return http.post('/leagues/' + record.id, record).then(function (resp) { return resp.data })
+      return http.post('/leagues', record).then(function (resp) { return resp.data })
     }
+  },
+  remove: function (record) {
+    if (record.id) {
+      return http.delete('/leagues/' + record.id).then(function (resp) { return resp.data })
+    } else {
+      return new Promise(function (resolve, reject) { resolve() })
+    }
+  },
+  isUniqueTitle: function (title) {
+    return http.get('/leagues?filter[where][title]=' + title).then(function (resp) { return resp.data.length === 0 })
   }
 }
 

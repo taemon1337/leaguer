@@ -14,15 +14,15 @@
           <router-link to="/leagues/new">Create League</router-link>
         </a>
       </div>
-      <div class="navbar-end">
+      <div v-if="currentUser" class="navbar-end">
         <b-dropdown v-model="navigation" position="is-bottom-left">
           <a class="navbar-item" slot="trigger">
-            <span>Menu</span>
-            <b-icon pack="fa" icon="caret-down"></b-icon>
+            <img class="is-round" :src="currentUser.photo" />
+            <b-icon icon="caret-down"></b-icon>
           </a>
           <b-dropdown-item>
-            <login-form></login-form>
-            <logout-form></logout-form>
+            <logged-in-menu></logged-in-menu>
+            <logged-out-menu></logged-out-menu>
           </b-dropdown-item>
         </b-dropdown>
       </div>
@@ -32,8 +32,10 @@
 
 <script>
   import logo from '@/assets/LeagueIcon.png'
-  import LoginForm from '@/components/LoginForm'
-  import LogoutForm from '@/components/LogoutForm'
+  import LoggedInMenu from '@/components/LoggedInMenu'
+  import LoggedOutMenu from '@/components/LoggedOutMenu'
+  import { GlobalTypes } from '@/store/mutation-types'
+  import { mapGetters } from 'vuex'
 
   export default {
     data () {
@@ -42,9 +44,20 @@
         navigation: 'home'
       }
     },
+    computed: {
+      ...mapGetters({
+        currentUser: GlobalTypes.currentUser
+      })
+    },
     components: {
-      LoginForm,
-      LogoutForm
+      LoggedInMenu,
+      LoggedOutMenu
     }
   }
 </script>
+
+<style scoped="true">
+  .is-round {
+    border-radius: 50%;
+  }
+</style>

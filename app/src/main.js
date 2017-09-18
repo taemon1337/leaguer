@@ -6,6 +6,8 @@ import router from './router'
 import store from './store'
 import Buefy from 'buefy'
 
+window.store = store
+
 import 'font-awesome/css/font-awesome.css'
 import 'buefy/lib/buefy.css'
 

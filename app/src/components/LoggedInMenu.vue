@@ -11,7 +11,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'LoginForm',
+    name: 'LoggedInMenu',
     data () {
       return {}
     },
@@ -22,10 +22,3 @@
     }
   }
 </script>
-
-<style scoped="true">
-  .is-round {
-    border-radius: 50%;
-  }
-</style>
-
