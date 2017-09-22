@@ -4,7 +4,7 @@ export const LeagueTypes = {
   add: 'League.add',
   save: 'League.save',
   remove: 'League.remove',
-  findById: 'League.findById'
+  find: 'League.find'
 }
 
 export const GlobalTypes = {

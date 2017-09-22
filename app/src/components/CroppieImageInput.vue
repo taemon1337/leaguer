@@ -77,7 +77,7 @@
         file: null,
         opts: {
           viewport: { width: 600, height: 300 },
-          boundary: { width: 650, height: 350 },
+          boundary: { width: 600, height: 300 },
           showZoomer: true,
           enableResize: false,
           enableOrientation: true
@@ -91,8 +91,11 @@
       initCroppie () {
         this.croppie = new Croppie(this.$refs.croppie, this.opts)
         if (this.value) {
-          this.croppie.bind({ url: this.value })
+          this.setValue(this.value)
         }
+      },
+      setValue (value) {
+        this.croppie.bind({ url: value })
       },
       popup () {
         let self = this

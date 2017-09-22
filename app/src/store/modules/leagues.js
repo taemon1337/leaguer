@@ -10,7 +10,7 @@ const state = {
 // getters
 const getters = {
   [LeagueTypes.all]: state => state.all,
-  [LeagueTypes.findById]: function (state) {
+  [LeagueTypes.find]: function (state) {
     return function (id) {
       return state.all.filter(item => { return item.id === id })
     }
@@ -33,6 +33,17 @@ const actions = {
   [LeagueTypes.active] ({ commit }, id) {
     api.leagues.get(id).then(function (resp) {
       commit(LeagueTypes.add, resp)
+    }).catch(function (err) {
+      store.dispatch(MessageTypes.add, {
+        type: 'is-danger',
+        message: 'Error fetching league with id ' + id + '\n' + err.toString()
+      })
+    })
+  },
+  [LeagueTypes.find] ({ commit }, id) {
+    return api.leagues.get(id).then(function (resp) {
+      commit(LeagueTypes.add, resp)
+      return resp
     }).catch(function (err) {
       store.dispatch(MessageTypes.add, {
         type: 'is-danger',

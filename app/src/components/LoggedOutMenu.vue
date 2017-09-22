@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <div v-if="currentUser">
-      <img class="is-round" :src="currentUser.photo" />
-      <a @click.stop.prevent="signout">
-        Sign Out
-      </a>
-    </div>
+  <div v-if="currentUser">
+    <b-dropdown-item custom>
+      Logged in as <b>{{ currentUser.name }}</b>
+    </b-dropdown-item>
+    <hr class="dropdown-divider">
+    <a @click.stop.prevent="signout">
+      Sign Out
+    </a>
   </div>
 </template>
 

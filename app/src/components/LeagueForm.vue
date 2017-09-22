@@ -10,6 +10,11 @@
           </b-field>
         </div>
         <div class="column">
+          <b-field label="Action Text">
+            <b-input v-model="actionText" maxlength="15" placeholder="Join Now!"></b-input>
+          </b-field>
+        </div>
+        <div class="column">
           <b-field label="Subtitle">
             <b-input v-model="subtitle" maxlength="30" placeholder="an interesting tag line..."></b-input>
           </b-field>
@@ -47,8 +52,8 @@
           <b-field label="Start Date"></b-field>
           <b-field>
             <b-datepicker v-model="start_date" placeholder="Select a start date" icon="calendar" style="width:200px;" :min-date="today" :max-date="nextYear" :date-formatter="formatDate"></b-datepicker>
-            <b-select placeholder="Set time" @input="setStartTime">
-              <option v-for="time in times" :value="time" :key="time">{{ time < 13 ? time : time - 12 }}:00 {{ time < 12 ? 'AM' : 'PM' }}</option>
+            <b-select placeholder="Set time" @input="setStartTime" :value="startTime">
+              <option v-for="time in times" :selected="time === startTime" :value="time" :key="time">{{ time < 13 ? time : time - 12 }}:00 {{ time < 12 ? 'AM' : 'PM' }}</option>
             </b-select>
           </b-field>
         </div>
@@ -56,8 +61,8 @@
           <b-field label="End Date"></b-field>
           <b-field>
             <b-datepicker v-model="end_date" placeholder="Select an end date (optional)" icon="calendar" style="width:200px;" :min-date="start_date" :max-date="nextYear" :date-formatter="formatDate"></b-datepicker>
-            <b-select placeholder="Set time" @input="setEndTime">
-              <option v-for="time in times" :value="time" :key="time">{{ time < 12 ? time : time - 12 }}:00 {{ time < 12 ? 'AM' : 'PM' }}</option>
+            <b-select placeholder="Set time" @input="setEndTime" :value="endTime">
+              <option v-for="time in times" :selected="time === endTime" :value="time" :key="time">{{ time < 12 ? time : time - 12 }}:00 {{ time < 12 ? 'AM' : 'PM' }}</option>
             </b-select>
           </b-field>
         </div>
@@ -150,15 +155,11 @@
 
   export default {
     name: 'LeagueForm',
-    props: {
-      id: {
-        type: String
-      }
-    },
     data () {
       return {
         title: '',
         subtitle: '',
+        actionText: '',
         description: '',
         location: '',
         managerEmail: '',
@@ -267,6 +268,36 @@
             })
           })
         })
+      },
+      setFormData () {
+        if (this.league) {
+          this.id = this.league.id
+          this.title = this.league.title
+          this.subtitle = this.league.subtitle
+          this.actionText = this.league.actionText
+          this.description = this.league.description
+          this.location = this.league.location
+          this.photo = this.league.photo
+          this.managerEmail = this.league.managerEmail
+          this.start_date = new Date(this.league.start_date)
+          this.end_date = new Date(this.league.end_date)
+          this.min_teams_per_league = this.league.min_teams_per_league
+          this.max_teams_per_league = this.league.max_teams_per_league
+          this.min_players_per_team = this.league.min_players_per_team
+          this.max_players_per_team = this.league.max_players_per_team
+          this.min_teams_per_game = this.league.min_teams_per_game
+          this.max_teams_per_game = this.league.max_teams_per_game
+          this.allow_players_to_join_anytime = this.league.allow_players_to_join_anytime
+          this.allow_teams_to_join_anytime = this.league.allow_teams_to_join_anytime
+          this.allow_teams_to_request_locations = this.league.allow_teams_to_request_locations
+          this.allow_teams_to_request_games = this.league.allow_teams_to_request_games
+          this.allow_teams_to_approve_games = this.allow_teams_to_approve_games
+          this.categories = this.league.categories
+          this.tags = this.league.tags
+          if (this.league.photo) {
+            this.$refs.croppie.setValue(this.league.photo)
+          }
+        }
       }
     },
     computed: {
@@ -281,6 +312,7 @@
           id: this.id,
           title: this.title,
           subtitle: this.subtitle,
+          actionText: this.actionText,
           description: this.description,
           location: this.location,
           managerEmail: this.managerEmail,
@@ -307,38 +339,26 @@
       },
       times () {
         return Array.apply(null, Array(24)).map(function (_, i) { return i })
+      },
+      startTime () {
+        return this.start_date ? this.start_date.getHours() || 0 : 0
+      },
+      endTime () {
+        return this.end_date ? this.end_date.getHours() || 0 : 0
       }
     },
     mounted () {
+      var self = this
       if (this.currentUser) {
         this.managerEmail = this.currentUser.email
       }
-      if (this.id) {
-        this.$store.dispatch(LeagueTypes.active, this.id)
+      if (this.$route.params.id) {
+        this.$store.dispatch(LeagueTypes.find, this.$route.params.id).then(function (record) {
+          self.league = record
+          self.setFormData()
+        })
       }
-      if (this.league) {
-        this.id = this.league.id
-        this.title = this.league.title
-        this.subtitle = this.league.subtitle
-        this.description = this.league.description
-        this.location = this.league.location
-        this.managerEmail = this.league.managerEmail
-        this.start_date = this.league.start_date
-        this.end_date = this.league.end_date
-        this.min_teams_per_league = this.league.min_teams_per_league
-        this.max_teams_per_league = this.league.max_teams_per_league
-        this.min_players_per_team = this.league.min_players_per_team
-        this.max_players_per_team = this.league.max_players_per_team
-        this.min_teams_per_game = this.league.min_teams_per_game
-        this.max_teams_per_game = this.league.max_teams_per_game
-        this.allow_players_to_join_anytime = this.league.allow_players_to_join_anytime
-        this.allow_teams_to_join_anytime = this.league.allow_teams_to_join_anytime
-        this.allow_teams_to_request_locations = this.league.allow_teams_to_request_locations
-        this.allow_teams_to_request_games = this.league.allow_teams_to_request_games
-        this.allow_teams_to_approve_games = this.allow_teams_to_approve_games
-        this.categories = this.league.categories
-        this.tags = this.league.tags
-      }
+      this.setFormData()
     },
     components: {
       vueSlider,

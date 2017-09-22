@@ -20,9 +20,51 @@
             <img class="is-round" :src="currentUser.photo" />
             <b-icon icon="caret-down"></b-icon>
           </a>
+          <b-dropdown-item custom>
+            <b>{{ currentUser.name }}</b>
+          </b-dropdown-item>
+          <hr class="dropdown-divider">
           <b-dropdown-item>
-            <logged-in-menu></logged-in-menu>
-            <logged-out-menu></logged-out-menu>
+            <a @click.stop.prevent>
+              <b-icon icon="group"></b-icon>
+              My Groups
+            </a>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <a @click.stop.prevent>
+              <b-icon icon="calendar"></b-icon>
+              My Calendar
+            </a>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <a @click.stop.prevent>
+              <b-icon icon="globe"></b-icon>
+              My Locations
+            </a>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <a @click.stop.prevent>
+              <b-icon icon="gear"></b-icon>
+              My Settings
+            </a>
+          </b-dropdown-item>
+          <hr class="dropdown-divider">
+          <b-dropdown-item>
+            <a @click.stop.prevent="signout">
+              <b-icon icon="sign-out"></b-icon>
+              Sign Out
+            </a>
+          </b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div v-show="!currentUser" class="navbar-end">
+        <b-dropdown v-model="navigation" position="is-bottom-left">
+          <a class="navbar-item" slot="trigger">
+            <b-icon icon="sign-in"></b-icon>
+            Sign in
+          </a>
+          <b-dropdown-item>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
           </b-dropdown-item>
         </b-dropdown>
       </div>
@@ -32,8 +74,6 @@
 
 <script>
   import logo from '@/assets/LeagueIcon.png'
-  import LoggedInMenu from '@/components/LoggedInMenu'
-  import LoggedOutMenu from '@/components/LoggedOutMenu'
   import { GlobalTypes } from '@/store/mutation-types'
   import { mapGetters } from 'vuex'
 
@@ -49,9 +89,10 @@
         currentUser: GlobalTypes.currentUser
       })
     },
-    components: {
-      LoggedInMenu,
-      LoggedOutMenu
+    methods: {
+      signout () {
+        this.$store.dispatch(GlobalTypes.signout)
+      }
     }
   }
 </script>
